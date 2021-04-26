@@ -7,17 +7,16 @@
 
 |
 
+.. image:: https://raw.githubusercontent.com/Uptimedog/Hond/main/chart/chart.png
+   :width: 700
+
+|
+
 =====
 Hond
 =====
 
     Metrics Ingestion and Alerting Reimagined.
-
-
-Chart
-=====
-
-![Chart](https://raw.githubusercontent.com/Uptimedog/Hond/main/chart/chart.png)
 
 
 Note
