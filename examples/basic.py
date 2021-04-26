@@ -21,7 +21,7 @@ from hond.trigger import Trigger
 
 
 def main():
-    driver = ElasticSearch("http://localhost:9200", "metrics")
+    driver = ElasticSearch(["http://localhost:9200"], "metrics")
     hond = Hond(driver)
 
     if sys.argv[1] == "migrate":

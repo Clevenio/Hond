@@ -32,11 +32,27 @@ class ElasticSearch:
     ElasticSearch Driver Class
     """
 
-    def __init__(self, connection, index_name):
+    def __init__(self, nodes, index_name, ca_certs=None, username=None, password=None):
         """Inits elasticsearch"""
         self.logger = Logger().get_logger(__name__)
-        self.client = Elasticsearch(connection)
         self.index_name = index_name
+
+        if ca_certs is not None and username is not None and password is not None:
+            self.client = Elasticsearch(
+                nodes, ca_certs=ca_certs, basic_auth=(username, password)
+            )
+
+        elif ca_certs is not None:
+            self.client = Elasticsearch(
+                nodes,
+                ca_certs=ca_certs,
+            )
+
+        elif username is not None and password is not None:
+            self.client = Elasticsearch(nodes, basic_auth=(username, password))
+
+        else:
+            self.client = Elasticsearch(nodes)
 
     def get_client(self):
         """
@@ -395,13 +411,9 @@ class ElasticSearch:
                     if "==" in match.group(2):
                         value = self.equal(metric_name, benchmark, for_in_sec)
                     elif ">=" in match.group(2):
-                        value = self.above_equal(
-                            metric_name, benchmark, for_in_sec
-                        )
+                        value = self.above_equal(metric_name, benchmark, for_in_sec)
                     elif "<=" in match.group(2):
-                        value = self.below_equal(
-                            metric_name, benchmark, for_in_sec
-                        )
+                        value = self.below_equal(metric_name, benchmark, for_in_sec)
                     elif ">" in match.group(2):
                         value = self.above(metric_name, benchmark, for_in_sec)
                     elif "<" in match.group(2):
