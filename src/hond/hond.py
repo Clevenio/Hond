@@ -30,8 +30,8 @@ class Hond:
         self.logger = Logger().get_logger(__name__)
         self.driver = driver
 
-    def insert(metric):
+    def insert(self, metric):
         return self.driver.insert(metric)
 
-    def evaluate(trigger):
-        return self.driver.evaluate(trigger)
+    def evaluate(self, trigger):
+        return self.driver.evaluate(trigger.value)

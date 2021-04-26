@@ -353,7 +353,7 @@ class ElasticSearch:
         """
         return self.client.search(index=self.index_name, body=query)
 
-    def evaluate(expression):
+    def evaluate(self, expression):
         """
         Evaluate a trigger value
 
@@ -369,35 +369,43 @@ class ElasticSearch:
         expressions = re.split(" and | or ", expression)
 
         for exp in expressions:
-            pattern = r"^(m)\{(.*)\}(\[(.*)\])?$"
+            pattern = r"^(m)\{(.*)\}(\[(.*)s\])?$"
             match = re.match(pattern, exp)
             if match:
                 items = re.split(">=|<=|==|>|<", match.group(2))
 
                 if items[1] == "nul":
                     metric_name = items[0]
-                    for_in_sec = int(match.group(4))
+
+                    try:
+                        for_in_sec = int(match.group(4))
+                    except Exception:
+                        raise Exception("Invalid expression: {}".format(exp))
 
                     value = self.is_absent(metric_name, for_in_sec)
                 else:
                     metric_name = items[0]
-                    benchmark = float(items[1])
-                    for_in_sec = int(match.group(4))
+
+                    try:
+                        benchmark = float(items[1])
+                        for_in_sec = int(match.group(4))
+                    except Exception:
+                        raise Exception("Invalid expression: {}".format(exp))
 
                     if "==" in match.group(2):
-                        value = self.equal(self, metric_name, benchmark, for_in_sec)
+                        value = self.equal(metric_name, benchmark, for_in_sec)
                     elif ">=" in match.group(2):
                         value = self.above_equal(
-                            self, metric_name, benchmark, for_in_sec
+                            metric_name, benchmark, for_in_sec
                         )
                     elif "<=" in match.group(2):
                         value = self.below_equal(
-                            self, metric_name, benchmark, for_in_sec
+                            metric_name, benchmark, for_in_sec
                         )
                     elif ">" in match.group(2):
-                        value = self.above(self, metric_name, benchmark, for_in_sec)
+                        value = self.above(metric_name, benchmark, for_in_sec)
                     elif "<" in match.group(2):
-                        value = self.below(self, metric_name, benchmark, for_in_sec)
+                        value = self.below(metric_name, benchmark, for_in_sec)
 
                 if value:
                     result.append("True")
