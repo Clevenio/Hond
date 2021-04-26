@@ -8,7 +8,7 @@
 |
 
 .. image:: https://raw.githubusercontent.com/Uptimedog/Hond/main/chart/chart.png
-   :width: 700
+   :width: 100%
 
 |
 
