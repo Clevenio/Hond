@@ -1,15 +1,15 @@
 .. image:: https://img.shields.io/pypi/v/Cavalier.svg
     :alt: PyPI-Server
     :target: https://pypi.org/project/Cavalier/
-.. image:: https://github.com/Clivern/Cavalier/actions/workflows/ci.yml/badge.svg
+.. image:: https://github.com/Uptimedog/Cavalier/actions/workflows/ci.yml/badge.svg
     :alt: Build Status
-    :target: https://github.com/Clivern/Cavalier/actions/workflows/ci.yml
+    :target: https://github.com/Uptimedog/Cavalier/actions/workflows/ci.yml
 
 |
 
-=====
+========
 Cavalier
-=====
+========
 
     Metrics Ingestion and Alerting Reimagined.
 
