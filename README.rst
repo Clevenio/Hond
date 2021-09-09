@@ -1,14 +1,14 @@
-.. image:: https://img.shields.io/pypi/v/Beats.svg
+.. image:: https://img.shields.io/pypi/v/PyBeats.svg
     :alt: PyPI-Server
-    :target: https://pypi.org/project/Beats/
-.. image:: https://github.com/Clivern/Beats/actions/workflows/ci.yml/badge.svg
+    :target: https://pypi.org/project/PyBeats/
+.. image:: https://github.com/Clivern/PyBeats/actions/workflows/ci.yml/badge.svg
     :alt: Build Status
-    :target: https://github.com/Clivern/Beats/actions/workflows/ci.yml
+    :target: https://github.com/Clivern/PyBeats/actions/workflows/ci.yml
 
 |
 
 =====
-Beats
+PyBeats
 =====
 
     Metrics Ingestion and Alerting Reimagined.

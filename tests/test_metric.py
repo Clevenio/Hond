@@ -22,7 +22,7 @@
 
 import pytest
 
-from beats.metric import Metric
+from pybeats.metric import Metric
 
 
 def test_metric():
