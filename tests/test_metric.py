@@ -22,7 +22,7 @@
 
 import pytest
 
-from pybeats.metric import Metric
+from cavalier.metric import Metric
 
 
 def test_metric():

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pybeats.logger import Logger
+from cavalier.logger import Logger
 from elasticsearch import Elasticsearch
 
 
