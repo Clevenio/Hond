@@ -21,6 +21,7 @@ class ElasticSearch():
 
     Attributes:
         logger: An instance of Logger class
+        client: An instance of elasticsearch client
     """
 
     def __init__(self, connection):
@@ -35,7 +36,7 @@ class ElasticSearch():
         Returns:
             a dict of client info
         """
-        return self.client.client.info()
+        return self.client.info()
 
     def add_before_hook(self, callback):
         """Add before hook
@@ -53,19 +54,60 @@ class ElasticSearch():
         """
         self._after_hook = callback
 
-    def insert(self, data):
+    def insert(self, indexName="metrics", metric):
         """Insert metrics into elastic search
 
         Args:
-            data: the metric data to insert
+            indexName: the elasticsearch index
+            metric: the metric data to insert
         """
-        self._before_hook(data)
-        self._after_hook(data)
+        self.logger.debug("Trigger before hook for metric: {}", str(metric))
 
-    def query(self, filters):
-        """Query the elastic search
+        self._before_hook(metric)
+
+        doc = {
+           "id": metric.id,
+           "name": metric.name,
+           "value": metric.value,
+           "timestamp": metric.timestamp,
+           "meta": metric.meta
+        }
+
+        self.logger.debug("Insert metric into elasticsearch: {}", str(metric))
+
+        response = self.client.index(index=indexName, document=doc)
+
+        self.logger.debug("Trigger after hook for metric: {}", str(metric))
+
+        self._after_hook(metric)
+
+        return response
+
+
+    def up(self, indexName="metrics", shards=1, replicas=1):
+        """Create metric index
 
         Args:
-            filters: the filters to use
+            indexName: the elasticsearch index
+            shards: the number of shards
+            replicas: the number of replicas
         """
-        pass
+        doc = {
+            "settings": {
+               "number_of_shards": shards,
+               "number_of_replicas": replicas
+            },
+           "mappings": {
+                "properties": {
+                   "id": {"type": "text"},
+                   "name": {"type": "text"},
+                   "value": {"type": "float"},
+                   "timestamp": {"type": "long"},
+                   "meta": {"type": "object"}
+                }
+            }
+        }
+
+        response = client.index(index=indexName, document=doc)
+
+        return response

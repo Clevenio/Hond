@@ -22,26 +22,28 @@
 
 import uuid
 import json
+from datetime import datetime
 
 
 class Metric():
     """Metric Class"""
 
-    def __init__(self, key, value, id=None, meta={}):
-        self._key = key
+    def __init__(self, name, value, id=None, meta={}, timestamp=None):
+        self._name = name
+        self._meta = meta
         self._value = value
         self._id = str(uuid.uuid4()) if id is None else id
-        self._meta = meta
+        self._timestamp = datetime.timestamp(datetime.now()) if timestamp is None else timestamp
 
     @property
-    def key(self):
+    def name(self):
         """
-        Gets the metric key
+        Gets the metric name
 
         Returns:
-            The metric key
+            The metric name
         """
-        return self._key
+        return self._name
 
     @property
     def value(self):
@@ -73,6 +75,16 @@ class Metric():
         """
         return self._meta
 
+    @property
+    def timestamp(self):
+        """
+        Gets the metric timestamp
+
+        Returns:
+            The metric timestamp
+        """
+        return self._timestamp
+
     @classmethod
     def from_json(cls, data):
         """
@@ -87,10 +99,11 @@ class Metric():
         data = json.loads(data)
 
         return cls(
-            data['key'],
+            data['name'],
             data['value'],
             data['id'],
-            data['meta']
+            data['meta'],
+            data['timestamp']
         )
 
     def __str__(self):
@@ -101,8 +114,9 @@ class Metric():
             A JSON representation of this instance
         """
         return json.dumps({
-            'key': self._key,
+            'name': self._name,
             'value': self._value,
             'id': self._id,
             'meta': self._meta,
+            'timestamp': self._timestamp,
         })

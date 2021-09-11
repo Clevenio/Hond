@@ -35,19 +35,22 @@ def test_metric():
         {"agent": "ebe94451-f111-42f5-9778-da7db3f0bcde"}
     )
 
-    assert metric.key == "customers.1234567.cpu"
+    assert metric.name == "customers.1234567.cpu"
     assert metric.value == 20.2
     assert metric.meta == {"agent": "ebe94451-f111-42f5-9778-da7db3f0bcde"}
     assert metric.id == "732a5add-c21e-4423-bded-7a97ff0c8be8"
+    assert metric.timestamp > 0
 
     metric = Metric(
         "customers.1234568.memory",
         22.2,
         None,
-        {}
+        {},
+        1662503511
     )
 
-    assert metric.key == "customers.1234568.memory"
+    assert metric.name == "customers.1234568.memory"
     assert metric.value == 22.2
     assert metric.meta == {}
     assert metric.id != ""
+    assert metric.timestamp == 1662503511
