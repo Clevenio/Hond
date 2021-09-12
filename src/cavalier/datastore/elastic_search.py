@@ -84,7 +84,7 @@ class ElasticSearch():
         return response
 
 
-    def up(self, indexName="metrics", shards=1, replicas=1):
+    def migrate(self, indexName="metrics", shards=1, replicas=1):
         """Create metric index
 
         Args:
