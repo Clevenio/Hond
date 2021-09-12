@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from cavalier.datastore.elastic_search import ElasticSearch
+from cavalier.datastore.elasticsearch import ElasticSearch
 from cavalier.metric import Metric
 
 
