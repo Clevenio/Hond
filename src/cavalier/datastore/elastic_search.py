@@ -167,6 +167,7 @@ class ElasticSearch():
 
         response1 = self.client.search(index=index_name, body=query1)
 
+        # If no hits have been found
         if response1['hits']['total']['value'] == 0:
             return False
 
@@ -211,6 +212,7 @@ class ElasticSearch():
 
         response1 = self.client.search(index=index_name, body=query1)
 
+        # If no hits have been found
         if response1['hits']['total']['value'] == 0:
             return False
 
@@ -255,6 +257,7 @@ class ElasticSearch():
 
         response1 = self.client.search(index=index_name, body=query1)
 
+        # If no hits have been found
         if response1['hits']['total']['value'] == 0:
             return False
 
@@ -273,3 +276,14 @@ class ElasticSearch():
         response2 = self.client.search(index=index_name, body=query2)
 
         return response1['hits']['total']['value'] == response2['hits']['total']['value']
+
+    def search(self, index_name, query):
+        """Query elasticsearch index
+
+        Args:
+            index_name: The elasticsearch index
+
+        Returns:
+            The result
+        """
+        return self.client.search(index=index_name, body=query)
