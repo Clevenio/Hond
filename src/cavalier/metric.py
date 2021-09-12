@@ -22,7 +22,7 @@
 
 import uuid
 import json
-from datetime import datetime
+import time
 
 
 class Metric():
@@ -33,7 +33,7 @@ class Metric():
         self._meta = meta
         self._value = value
         self._id = str(uuid.uuid4()) if id is None else id
-        self._timestamp = datetime.timestamp(datetime.now()) if timestamp is None else timestamp
+        self._timestamp = int(time.time()) if timestamp is None else timestamp
 
     @property
     def name(self):

@@ -23,8 +23,9 @@ def main():
         {"agentId": "1bee4e3c-0976-44d9-bf4a-6432857e4f3c"}
     )
     es = ElasticSearch("http://localhost:9200")
-    es.migrate()
-    es.insert(metric)
+    es.migrate("metric")
+    es.insert(metric, "metric")
+    es.is_absent("metric", "customers.123.456.789.cpu")
 
 
 if __name__ == '__main__':

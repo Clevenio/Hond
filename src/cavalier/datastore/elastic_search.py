@@ -14,6 +14,7 @@
 
 from cavalier.logger import Logger
 from elasticsearch import Elasticsearch
+import time
 
 
 class ElasticSearch():
@@ -56,43 +57,11 @@ class ElasticSearch():
         """
         self.after_hook = callback
 
-    def insert(self, metric, indexName="metric"):
-        """Insert metrics into elastic search
-
-        Args:
-            indexName: the elasticsearch index
-            metric: the metric data to insert
-        """
-        self.logger.debug("Trigger before hook for metric: {}", str(metric))
-
-        if self.before_hook is not None:
-            self.before_hook(metric)
-
-        doc = {
-           "id": metric.id,
-           "name": metric.name,
-           "value": metric.value,
-           "timestamp": metric.timestamp,
-           "meta": metric.meta
-        }
-
-        self.logger.debug("Insert metric into elasticsearch: {}", str(metric))
-
-        response = self.client.index(index=indexName, document=doc)
-
-        self.logger.debug("Trigger after hook for metric: {}", str(metric))
-
-        if self.after_hook is not None:
-            self.after_hook(metric)
-
-        return response
-
-
-    def migrate(self, indexName="metric", shards=1, replicas=1):
+    def migrate(self, index_name, shards=1, replicas=1):
         """Create metric index
 
         Args:
-            indexName: the elasticsearch index
+            index_name: the elasticsearch index
             shards: the number of shards
             replicas: the number of replicas
         """
@@ -112,6 +81,195 @@ class ElasticSearch():
             }
         }
 
-        response = self.client.index(index=indexName, document=doc)
+        response = self.client.index(index=index_name, document=doc)
 
         return response
+
+    def insert(self, metric, index_name):
+        """Insert metrics into elastic search
+
+        Args:
+            index_name: the elasticsearch index
+            metric: the metric data to insert
+        """
+        self.logger.debug("Trigger before hook for metric: {}", str(metric))
+
+        if self.before_hook is not None:
+            self.before_hook(metric)
+
+        doc = {
+           "id": metric.id,
+           "name": metric.name,
+           "value": metric.value,
+           "timestamp": metric.timestamp,
+           "meta": metric.meta
+        }
+
+        self.logger.debug("Insert metric into elasticsearch: {}", str(metric))
+
+        response = self.client.index(index=index_name, document=doc)
+
+        self.logger.debug("Trigger after hook for metric: {}", str(metric))
+
+        if self.after_hook is not None:
+            self.after_hook(metric)
+
+        return response
+
+    def is_absent(self, index_name, metric_name, for_in_sec=60):
+        """Check if the metric is absent for x seconds
+
+        Args:
+            index_name: The elasticsearch index
+            metric_name: The metric name
+            for_in_sec: The time interval in seconds
+
+        Returns:
+            Whether the condition is true or false
+        """
+        query = {
+          "query": {
+            "bool": {
+              "must": [
+                 {"match_phrase": {"name": {"query": metric_name}}},
+                 {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+              ]
+            }
+          }
+        }
+
+        response = self.client.search(index=index_name, body=query)
+
+        return response['hits']['total']['value'] == 0 and len(response['hits']['hits']) == 0
+
+    def equal(self, index_name, metric_name, benchmark, for_in_sec=60):
+        """Check if the metric is equal to the benchmark for x seconds
+
+        Args:
+            index_name: The elasticsearch index
+            metric_name: The metric name
+            benchmark: The benchmark value
+            for_in_sec: The time interval in seconds
+
+        Returns:
+            Whether the condition is true or false
+        """
+        query1 = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match_phrase": {"name": {"query": metric_name}}},
+                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                    ]
+                }
+            }
+        }
+
+        response1 = self.client.search(index=index_name, body=query1)
+
+        if response1['hits']['total']['value'] == 0:
+            return False
+
+        query2 = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match_phrase": {"name": {"query": metric_name}}},
+                        {"match_phrase": {"value": {"query": benchmark}}},
+                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                    ]
+                }
+            }
+        }
+
+        response2 = self.client.search(index=index_name, body=query2)
+
+        return response1['hits']['total']['value'] == response2['hits']['total']['value']
+
+    def above(self, index_name, metric_name, benchmark, for_in_sec=60):
+        """Check if the metric is above the benchmark for x seconds
+
+        Args:
+            index_name: The elasticsearch index
+            metric_name: The metric name
+            benchmark: The benchmark value
+            for_in_sec: The time interval in seconds
+
+        Returns:
+            Whether the condition is true or false
+        """
+        query1 = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match_phrase": {"name": {"query": metric_name}}},
+                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                    ]
+                }
+            }
+        }
+
+        response1 = self.client.search(index=index_name, body=query1)
+
+        if response1['hits']['total']['value'] == 0:
+            return False
+
+        query2 = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match_phrase": {"name": {"query": metric_name}}},
+                        {"range": {"value": {"gt": benchmark}}},
+                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                    ]
+                }
+            }
+        }
+
+        response2 = self.client.search(index=index_name, body=query2)
+
+        return response1['hits']['total']['value'] == response2['hits']['total']['value']
+
+    def below(self, index_name, metric_name, benchmark, for_in_sec=60):
+        """Check if the metric is below the benchmark for x seconds
+
+        Args:
+            index_name: The elasticsearch index
+            metric_name: The metric name
+            benchmark: The benchmark value
+            for_in_sec: The time interval in seconds
+
+        Returns:
+            Whether the condition is true or false
+        """
+        query1 = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match_phrase": {"name": {"query": metric_name}}},
+                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                    ]
+                }
+            }
+        }
+
+        response1 = self.client.search(index=index_name, body=query1)
+
+        if response1['hits']['total']['value'] == 0:
+            return False
+
+        query2 = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match_phrase": {"name": {"query": metric_name}}},
+                        {"range": {"value": {"lt": benchmark}}},
+                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                    ]
+                }
+            }
+        }
+
+        response2 = self.client.search(index=index_name, body=query2)
+
+        return response1['hits']['total']['value'] == response2['hits']['total']['value']
