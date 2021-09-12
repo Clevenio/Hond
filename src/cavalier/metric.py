@@ -28,7 +28,7 @@ from datetime import datetime
 class Metric():
     """Metric Class"""
 
-    def __init__(self, name, value, id=None, meta={}, timestamp=None):
+    def __init__(self, name, value, meta={}, id=None, timestamp=None):
         self._name = name
         self._meta = meta
         self._value = value

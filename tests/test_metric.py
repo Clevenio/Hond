@@ -31,8 +31,8 @@ def test_metric():
     metric = Metric(
         "customers.1234567.cpu",
         20.2,
-        "732a5add-c21e-4423-bded-7a97ff0c8be8",
-        {"agent": "ebe94451-f111-42f5-9778-da7db3f0bcde"}
+        {"agent": "ebe94451-f111-42f5-9778-da7db3f0bcde"},
+        "732a5add-c21e-4423-bded-7a97ff0c8be8"
     )
 
     assert metric.name == "customers.1234567.cpu"
@@ -44,8 +44,8 @@ def test_metric():
     metric = Metric(
         "customers.1234568.memory",
         22.2,
-        None,
         {},
+        None,
         1662503511
     )
 

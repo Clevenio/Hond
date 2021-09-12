@@ -28,6 +28,8 @@ class ElasticSearch():
         """Inits elasticsearch"""
         self.logger = Logger().get_logger(__name__)
         self.client = Elasticsearch(connection)
+        self.before_hook = None
+        self.after_hook = None
 
     def get_client(self):
         """
@@ -44,7 +46,7 @@ class ElasticSearch():
         Args:
             callback: the before callback function
         """
-        self._before_hook = callback
+        self.before_hook = callback
 
     def add_after_hook(self, callback):
         """Add after hook
@@ -52,9 +54,9 @@ class ElasticSearch():
         Args:
             callback: the after callback function
         """
-        self._after_hook = callback
+        self.after_hook = callback
 
-    def insert(self, indexName="metrics", metric):
+    def insert(self, metric, indexName="metric"):
         """Insert metrics into elastic search
 
         Args:
@@ -63,7 +65,8 @@ class ElasticSearch():
         """
         self.logger.debug("Trigger before hook for metric: {}", str(metric))
 
-        self._before_hook(metric)
+        if self.before_hook is not None:
+            self.before_hook(metric)
 
         doc = {
            "id": metric.id,
@@ -79,12 +82,13 @@ class ElasticSearch():
 
         self.logger.debug("Trigger after hook for metric: {}", str(metric))
 
-        self._after_hook(metric)
+        if self.after_hook is not None:
+            self.after_hook(metric)
 
         return response
 
 
-    def migrate(self, indexName="metrics", shards=1, replicas=1):
+    def migrate(self, indexName="metric", shards=1, replicas=1):
         """Create metric index
 
         Args:
@@ -108,6 +112,6 @@ class ElasticSearch():
             }
         }
 
-        response = client.index(index=indexName, document=doc)
+        response = self.client.index(index=indexName, document=doc)
 
         return response
