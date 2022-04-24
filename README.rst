@@ -1,14 +1,14 @@
-.. image:: https://img.shields.io/pypi/v/Idog.svg
+.. image:: https://img.shields.io/pypi/v/Dachshund.svg
     :alt: PyPI-Server
-    :target: https://pypi.org/project/Idog/
-.. image:: https://github.com/Uptimedog/Idog/actions/workflows/ci.yml/badge.svg
+    :target: https://pypi.org/project/Dachshund/
+.. image:: https://github.com/Uptimedog/Dachshund/actions/workflows/ci.yml/badge.svg
     :alt: Build Status
-    :target: https://github.com/Uptimedog/Idog/actions/workflows/ci.yml
+    :target: https://github.com/Uptimedog/Dachshund/actions/workflows/ci.yml
 
 |
 
 ========
-Idog
+Dachshund
 ========
 
     Metrics Ingestion and Alerting Reimagined.

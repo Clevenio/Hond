@@ -20,59 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import json
 
-from idog.logger import Logger
+import sys
 
+if sys.version_info[:2] >= (3, 8):
+    # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
+    from importlib.metadata import PackageNotFoundError, version  # pragma: no cover
+else:
+    from importlib_metadata import PackageNotFoundError, version  # pragma: no cover
 
-class Config():
-	"""Application Metrics Config"""
-
-	def __init__(self):
-        self.logger = Logger().get_logger(__name__)
-
-    @property
-    def method(self):
-        """
-        Gets the method name
-
-        Returns:
-            The method name
-        """
-        return self._name
-
-    @classmethod
-    def from_json(cls, data):
-        """
-        Get Config from JSON string
-
-        Args:
-            data: the JSON string
-
-        Returns:
-            An instance of this class
-        """
-        data = json.loads(data)
-
-        return cls(
-            data['name'],
-            data['value'],
-            data['id'],
-            data['meta'],
-            data['timestamp']
-        )
-
-    def __str__(self):
-        """
-        Convert the Object to string
-
-        Returns:
-            A JSON representation of this instance
-        """
-        return json.dumps({
-            'name': self._name,
-            'value': self._value,
-            'id': self._id,
-            'meta': self._meta,
-            'timestamp': self._timestamp,
-        })
+try:
+    # Change here if project is renamed and does not equal the package name
+    dist_name = "dachshund"
+    __version__ = version(dist_name)
+except PackageNotFoundError:  # pragma: no cover
+    __version__ = "unknown"
+finally:
+    del version, PackageNotFoundError
