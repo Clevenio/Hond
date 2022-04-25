@@ -22,7 +22,7 @@
 
 import pytest
 
-from cavalier.metric import Metric
+from idog.metric import Metric
 
 
 def test_metric():

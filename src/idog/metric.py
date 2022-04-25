@@ -25,7 +25,7 @@ import json
 import time
 
 
-class Metric():
+class Metric:
     """Metric Class"""
 
     def __init__(self, name, value, meta={}, id=None, timestamp=None):
@@ -99,11 +99,7 @@ class Metric():
         data = json.loads(data)
 
         return cls(
-            data['name'],
-            data['value'],
-            data['id'],
-            data['meta'],
-            data['timestamp']
+            data["name"], data["value"], data["id"], data["meta"], data["timestamp"]
         )
 
     def __str__(self):
@@ -113,10 +109,12 @@ class Metric():
         Returns:
             A JSON representation of this instance
         """
-        return json.dumps({
-            'name': self._name,
-            'value': self._value,
-            'id': self._id,
-            'meta': self._meta,
-            'timestamp': self._timestamp,
-        })
+        return json.dumps(
+            {
+                "name": self._name,
+                "value": self._value,
+                "id": self._id,
+                "meta": self._meta,
+                "timestamp": self._timestamp,
+            }
+        )

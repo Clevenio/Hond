@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from cavalier.logger import Logger
-from elasticsearch import Elasticsearch
 import time
 
+from idog.logger import Logger
+from elasticsearch import Elasticsearch
 
-class ElasticSearch():
+
+class ElasticSearch:
     """ElasticSearch Class
 
     Attributes:
@@ -66,19 +67,16 @@ class ElasticSearch():
             replicas: the number of replicas
         """
         doc = {
-            "settings": {
-               "number_of_shards": shards,
-               "number_of_replicas": replicas
-            },
-           "mappings": {
+            "settings": {"number_of_shards": shards, "number_of_replicas": replicas},
+            "mappings": {
                 "properties": {
-                   "id": {"type": "text"},
-                   "name": {"type": "text"},
-                   "value": {"type": "float"},
-                   "timestamp": {"type": "long"},
-                   "meta": {"type": "object"}
+                    "id": {"type": "text"},
+                    "name": {"type": "text"},
+                    "value": {"type": "float"},
+                    "timestamp": {"type": "long"},
+                    "meta": {"type": "object"},
                 }
-            }
+            },
         }
 
         response = self.client.index(index=index_name, document=doc)
@@ -98,11 +96,11 @@ class ElasticSearch():
             self.before_hook(metric)
 
         doc = {
-           "id": metric.id,
-           "name": metric.name,
-           "value": metric.value,
-           "timestamp": metric.timestamp,
-           "meta": metric.meta
+            "id": metric.id,
+            "name": metric.name,
+            "value": metric.value,
+            "timestamp": metric.timestamp,
+            "meta": metric.meta,
         }
 
         self.logger.debug("Insert metric into elasticsearch: {}", str(metric))
@@ -128,19 +126,26 @@ class ElasticSearch():
             Whether the condition is true or false
         """
         query = {
-          "query": {
-            "bool": {
-              "must": [
-                 {"match_phrase": {"name": {"query": metric_name}}},
-                 {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
-              ]
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match_phrase": {"name": {"query": metric_name}}},
+                        {
+                            "range": {
+                                "timestamp": {"gte": int(time.time()) - for_in_sec}
+                            }
+                        },
+                    ]
+                }
             }
-          }
         }
 
         response = self.client.search(index=index_name, body=query)
 
-        return response['hits']['total']['value'] == 0 and len(response['hits']['hits']) == 0
+        return (
+            response["hits"]["total"]["value"] == 0
+            and len(response["hits"]["hits"]) == 0
+        )
 
     def equal(self, index_name, metric_name, benchmark, for_in_sec=60):
         """Check if the metric is equal to the benchmark for x seconds
@@ -159,7 +164,11 @@ class ElasticSearch():
                 "bool": {
                     "must": [
                         {"match_phrase": {"name": {"query": metric_name}}},
-                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                        {
+                            "range": {
+                                "timestamp": {"gte": int(time.time()) - for_in_sec}
+                            }
+                        },
                     ]
                 }
             }
@@ -168,7 +177,7 @@ class ElasticSearch():
         response1 = self.client.search(index=index_name, body=query1)
 
         # If no hits have been found
-        if response1['hits']['total']['value'] == 0:
+        if response1["hits"]["total"]["value"] == 0:
             return False
 
         query2 = {
@@ -177,7 +186,11 @@ class ElasticSearch():
                     "must": [
                         {"match_phrase": {"name": {"query": metric_name}}},
                         {"match_phrase": {"value": {"query": benchmark}}},
-                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                        {
+                            "range": {
+                                "timestamp": {"gte": int(time.time()) - for_in_sec}
+                            }
+                        },
                     ]
                 }
             }
@@ -185,7 +198,9 @@ class ElasticSearch():
 
         response2 = self.client.search(index=index_name, body=query2)
 
-        return response1['hits']['total']['value'] == response2['hits']['total']['value']
+        return (
+            response1["hits"]["total"]["value"] == response2["hits"]["total"]["value"]
+        )
 
     def above(self, index_name, metric_name, benchmark, for_in_sec=60):
         """Check if the metric is above the benchmark for x seconds
@@ -204,7 +219,11 @@ class ElasticSearch():
                 "bool": {
                     "must": [
                         {"match_phrase": {"name": {"query": metric_name}}},
-                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                        {
+                            "range": {
+                                "timestamp": {"gte": int(time.time()) - for_in_sec}
+                            }
+                        },
                     ]
                 }
             }
@@ -213,7 +232,7 @@ class ElasticSearch():
         response1 = self.client.search(index=index_name, body=query1)
 
         # If no hits have been found
-        if response1['hits']['total']['value'] == 0:
+        if response1["hits"]["total"]["value"] == 0:
             return False
 
         query2 = {
@@ -222,7 +241,11 @@ class ElasticSearch():
                     "must": [
                         {"match_phrase": {"name": {"query": metric_name}}},
                         {"range": {"value": {"gt": benchmark}}},
-                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                        {
+                            "range": {
+                                "timestamp": {"gte": int(time.time()) - for_in_sec}
+                            }
+                        },
                     ]
                 }
             }
@@ -230,7 +253,9 @@ class ElasticSearch():
 
         response2 = self.client.search(index=index_name, body=query2)
 
-        return response1['hits']['total']['value'] == response2['hits']['total']['value']
+        return (
+            response1["hits"]["total"]["value"] == response2["hits"]["total"]["value"]
+        )
 
     def below(self, index_name, metric_name, benchmark, for_in_sec=60):
         """Check if the metric is below the benchmark for x seconds
@@ -249,7 +274,11 @@ class ElasticSearch():
                 "bool": {
                     "must": [
                         {"match_phrase": {"name": {"query": metric_name}}},
-                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                        {
+                            "range": {
+                                "timestamp": {"gte": int(time.time()) - for_in_sec}
+                            }
+                        },
                     ]
                 }
             }
@@ -258,7 +287,7 @@ class ElasticSearch():
         response1 = self.client.search(index=index_name, body=query1)
 
         # If no hits have been found
-        if response1['hits']['total']['value'] == 0:
+        if response1["hits"]["total"]["value"] == 0:
             return False
 
         query2 = {
@@ -267,7 +296,11 @@ class ElasticSearch():
                     "must": [
                         {"match_phrase": {"name": {"query": metric_name}}},
                         {"range": {"value": {"lt": benchmark}}},
-                        {"range": {"timestamp": {"gte": int(time.time()) - for_in_sec}}}
+                        {
+                            "range": {
+                                "timestamp": {"gte": int(time.time()) - for_in_sec}
+                            }
+                        },
                     ]
                 }
             }
@@ -275,7 +308,9 @@ class ElasticSearch():
 
         response2 = self.client.search(index=index_name, body=query2)
 
-        return response1['hits']['total']['value'] == response2['hits']['total']['value']
+        return (
+            response1["hits"]["total"]["value"] == response2["hits"]["total"]["value"]
+        )
 
     def search(self, index_name, query):
         """Query elasticsearch index

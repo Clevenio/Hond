@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 import json
-from cavalier.logger import Logger
+
+from idog.logger import Logger
 
 
 class Config():
@@ -75,35 +76,3 @@ class Config():
             'meta': self._meta,
             'timestamp': self._timestamp,
         })
-
-
-class Application():
-	"""Collect Application Metrics
-
-	This class takes a config object as an input and
-	return an array of metrics. These metrics can be used to
-	identify if the application or API service is up or down.
-	it also return some metrics related to latency.
-	"""
-
-	def __init__(self, config=None):
-        self.logger = Logger().get_logger(__name__)
-        self.config = config
-
-	def get(self):
-		pass
-
-	def post(self):
-		pass
-
-	def put(self):
-		pass
-
-	def delete(self):
-		pass
-
-	def head(self):
-		pass
-
-	def execute(self, config):
-		self.config = config

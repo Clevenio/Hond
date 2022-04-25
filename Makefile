@@ -5,7 +5,7 @@ TOX ?= tox
 
 help: Makefile
 	@echo
-	@echo " Choose a command run in Cavalier:"
+	@echo " Choose a command run in Idog:"
 	@echo
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
 	@echo
@@ -18,6 +18,7 @@ config:
 	$(PIP) install wheel
 	$(PIP) install tox
 	$(PIP) install setuptools-scm
+	$(PIP) install git+https://github.com/psf/black
 
 
 ## test: Run test case.

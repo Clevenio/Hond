@@ -23,7 +23,7 @@
 import logging
 
 
-class Logger():
+class Logger:
     """Logger Class
 
     Attributes:

@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 
-class Exporter():
-	"""Collect Exporter Metrics"""
-	pass
+class Application:
+    """Collect Application Metrics"""
+
+    pass

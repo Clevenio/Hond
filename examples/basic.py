@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from cavalier.datastore.elasticsearch import ElasticSearch
-from cavalier.metric import Metric
+from idog.store.elasticsearch import ElasticSearch
+from idog.metric import Metric
 
 
 def main():
