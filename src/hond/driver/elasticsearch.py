@@ -354,7 +354,7 @@ class ElasticSearch:
             m{customers.123.456.789.cpu==nul}[30s]
             m{customers.123.456.789.cpu==nul}[30s] and m{customers.123.456.789.mem==nul}[30s]
 
-        TODO: switch to safer way other that eval but right now triggers is not a user input
+        TODO: switch to safer way other than eval but right now triggers is not a user input
         """
         result = []
         expressions = re.split(" and | or ", expression)
