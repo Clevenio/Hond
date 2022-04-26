@@ -20,8 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from hond.logger import Logger
 
-class Application:
-    """Collect Application Metrics"""
 
-    pass
+class Hond:
+    """Hond Class"""
+
+    def __init__(self, driver):
+        self.logger = Logger().get_logger(__name__)
+        self.driver = driver
+
+    def insert(metric):
+        return self.driver.insert(metric)
+
+    def evaluate(trigger):
+        return self.driver.evaluate(trigger)
