@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dachshund.store.elasticsearch import ElasticSearch
-from dachshund.metric import Metric
+from hond.store.elasticsearch import ElasticSearch
+from hond.metric import Metric
 
 
 def main():

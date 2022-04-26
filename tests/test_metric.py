@@ -22,7 +22,7 @@
 
 import pytest
 
-from dachshund.metric import Metric
+from hond.metric import Metric
 
 
 def test_metric():

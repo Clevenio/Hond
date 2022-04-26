@@ -14,7 +14,7 @@
 
 import time
 
-from dachshund.logger import Logger
+from hond.logger import Logger
 from elasticsearch import Elasticsearch
 
 
