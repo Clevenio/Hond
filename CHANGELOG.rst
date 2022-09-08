@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 1.0.0
+=============
+
+- Stable release
+
 Version 0.5.0
 =============
 
